@@ -6,10 +6,10 @@
     <select
       :id="id"
       :name="name"
-      v-model="modelValue"
+      :value="modelValue"
+      @change="$emit('update:modelValue', $event.target.value)"
       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
       :class="{ 'border-red-500': error }"
-      @change="$emit('update:modelValue', $event.target.value)"
     >
       <option value="" disabled selected v-if="placeholder">{{ placeholder }}</option>
       <slot></slot>
@@ -18,15 +18,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    modelValue: String,
-    label: String,
-    id: String,
-    name: String,
-    placeholder: String,
-    error: String
-  }
-};
+<script setup>
+defineProps({
+  modelValue: String,  // Menggunakan :value untuk binding, bukan v-model
+  label: String,
+  id: String,
+  name: String,
+  placeholder: String,
+  error: String
+});
+defineEmits(["update:modelValue"]); // Emit perubahan nilai ke parent
 </script>
