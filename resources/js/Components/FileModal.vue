@@ -1,15 +1,27 @@
 <template>
-  <div v-if="isVisible" class="fixed inset-0 flex items-end justify-center bg-black bg-opacity-50">
-    <div class="bg-white p-4 rounded-t-lg w-full max-w-md">
-      <div class="flex justify-between">
-        <button @click="selectCamera" class="flex items-center gap-2 border px-4 py-2 rounded-lg">
-          <i class="fas fa-camera"></i> Kamera
-        </button>
-        <button @click="selectGallery" class="flex items-center gap-2 border px-4 py-2 rounded-lg">
-          <i class="fas fa-image"></i> Galeri
-        </button>
-      </div>
-      <button @click="closeModal" class="absolute top-2 right-2 text-lg">&times;</button>
+  <div v-if="isVisible" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" @click="$emit('close')">✖</button>
+      <h3 class="text-lg font-bold mb-4">Pilih Sumber Foto</h3>
+      <button @click="selectCamera" class="btn-option">📷 Kamera</button>
+      <button @click="selectGallery" class="btn-option">🖼 Galeri</button>
+
+      <input 
+        type="file" 
+        ref="cameraInput" 
+        accept="image/*" 
+        capture="environment" 
+        @change="handleFileChange"
+        style="display: none"
+      />
+
+      <input 
+        type="file" 
+        ref="galleryInput" 
+        accept="image/*" 
+        @change="handleFileChange"
+        style="display: none"
+      />
     </div>
   </div>
 </template>
@@ -17,17 +29,51 @@
 <script>
 export default {
   props: ["isVisible"],
-  emits: ["close", "camera", "gallery"],
   methods: {
-    closeModal() {
-      this.$emit("close");
-    },
     selectCamera() {
-      this.$emit("camera");
+      this.$refs.cameraInput.click();
     },
     selectGallery() {
-      this.$emit("gallery");
+      this.$refs.galleryInput.click();
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const fileUrl = URL.createObjectURL(file);
+        this.$emit("fileSelected", fileUrl);
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+}
+.btn-option {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 8px;
+}
+</style>

@@ -22,29 +22,30 @@
         <div v-for="point in inspectionPoints" :key="point.id" class="mt-4">
           <label class="block text-sm font-medium">{{ point.name }}</label>
 
-<!-- Input Text -->
-<input v-if="point.type_input === 'Input Text'" type="text" 
-  v-model="formData[point.id]" 
-  class="w-full border px-3 py-2 rounded-lg mt-1" 
-  :placeholder="point.placeholder"
-  @input="formData[point.id] = $event.target.value.toUpperCase()" />
+          <!-- Input Text -->
+          <input v-if="point.type_input === 'Input Text'" type="text" 
+            v-model="formData[point.id]" 
+            class="w-full border px-3 py-2 rounded-lg mt-1" 
+            :placeholder="point.placeholder"
+            @input="formData[point.id] = $event.target.value.toUpperCase()" />
 
-        
-
-        <!-- Input Number -->
-        <input v-if="point.type_input === 'Input Number'" type="number" v-model="formData[point.id]" 
-          class="w-full border px-3 py-2 rounded-lg mt-1" 
+ <!-- Input Account dengan Format -->
+        <input v-if="point.type_input === 'Input Account'" type="text"
+          v-model="formData[point.id]" @input="formatCurrency(point.id)"
+          class="w-full border px-3 py-2 rounded-lg mt-1"
           :placeholder="point.placeholder" />
 
-        <!-- Input Account (formatted as currency) -->
-        <input v-if="point.type_input === 'Input Account'" type="text" v-model="formData[point.id]" 
-          @input="formatCurrency(point.id)"
-          class="w-full border px-3 py-2 rounded-lg mt-1" 
-          :placeholder="point.placeholder" />
 
-        <!-- Input Tanggal -->
-        <input v-if="point.type_input === 'Tanggal'" type="date" v-model="formData[point.id]" 
-          class="w-full border px-3 py-2 rounded-lg mt-1" />
+          <!-- Input Number -->
+          <input v-if="point.type_input === 'Input Number'" type="number" 
+            v-model="formData[point.id]" 
+            class="w-full border px-3 py-2 rounded-lg mt-1" 
+            :placeholder="point.placeholder" />
+
+          <!-- Input Tanggal -->
+          <input v-if="point.type_input === 'Tanggal'" type="date" 
+            v-model="formData[point.id]" 
+            class="w-full border px-3 py-2 rounded-lg mt-1" />
 
           <!-- Option "Ada" / "Tidak Ada" -->
           <div v-if="point.type_input === 'Option to Foto'" class="mt-2 flex justify-center gap-4">
@@ -58,35 +59,33 @@
               class="border px-4 py-2 rounded-lg">Tidak Ada</button>
           </div>
 
-           <!-- Input File untuk Foto -->
- <div v-if="point.type_input === 'Foto' || formData[point.id] === 'Ada'" >
-       <p class="text-xs text-gray-500">File JPG berukuran maks 2,5 MB</p>
-        <div class="photo-upload" @click="openModal(index)">
-          <img v-if="point.file" :src="point.file" alt="Foto" class="photo-preview" />
-          <div v-else class="upload-placeholder">
-            <i class="icon-upload"></i>
-            <p>Upload Foto</p>
+          <!-- Input File untuk Foto -->
+          <div v-if="point.type_input === 'Foto' || formData[point.id] === 'Ada'" class="mt-3">
+            <p class="text-gray-600 text-sm">File JPG berukuran maks 2,5 MB</p>
+            <div class="photo-upload border rounded-xl p-3 text-center cursor-pointer" @click="openModal(point.id)">
+              <img v-if="formData[point.id + '_file']" :src="formData[point.id + '_file']" alt="Foto" class="photo-preview rounded-xl" />
+              <div v-else class="upload-placeholder flex flex-col items-center">
+                <i class="icon-upload text-gray-400 text-3xl mb-2"></i>
+                <p class="text-gray-500">Upload Foto</p>
+              </div>
+            </div>
           </div>
-
-      </div>
-    </div>
-
         </div>
       </div>
     </div>
+
+    <!-- Komponen Modal Foto -->
+    <FileModal 
+      :isVisible="showModal" 
+      @close="showModal = false" 
+      @camera="openCamera" 
+      @gallery="openGallery" 
+      @fileSelected="handleFileUpload"
+    />
   </div>
-  
-  <!-- Komponen Modal -->
-  <FileModal 
-    :isVisible="showModal" 
-    @close="showModal = false" 
-    @camera="openCamera" 
-    @gallery="openGallery" 
-  />
 </template>
 
 <style scoped>
-/* Hilangkan scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -95,53 +94,25 @@
   scrollbar-width: none;
 }
 
-/* Styling agar lebih smooth */
 button:focus {
   outline: none;
 }
 
-/* Sembunyikan input file asli */
-input[type="file"] {
-  display: none;
-}
-
-.photo-section {
-  margin-bottom: 20px;
-}
-.upload-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.photo-upload {
   border: 2px dashed #ccc;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
+  border-radius: 10px;
 }
 .photo-preview {
   width: 100%;
   max-width: 250px;
-  border-radius: 5px;
-}
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
+  border-radius: 10px;
 }
 </style>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import FileModal from "@/components/FileModal.vue";
 
@@ -153,34 +124,12 @@ export default {
     const inspectionPoints = ref(categories.value.length ? categories.value[0].inspection_points : []);
     const formData = ref({});
     const filledCounts = ref({});
-    const categoryContainer = ref(null);
     const showModal = ref(false);
     const selectedFilePoint = ref(null);
 
     const selectCategory = (category, index) => {
       activeTab.value = index;
       inspectionPoints.value = category.inspection_points.filter(point => point.is_active);
-      initializeFormData();
-      scrollToActiveCategory();
-    };
-
-    const initializeFormData = () => {
-      formData.value = {};
-      inspectionPoints.value.forEach(point => {
-        formData.value[point.id] = "";
-      });
-    };
-
-    const scrollToActiveCategory = () => {
-      if (categoryContainer.value) {
-        const activeButton = categoryContainer.value.children[activeTab.value];
-        if (activeButton) {
-          categoryContainer.value.scrollTo({
-            left: activeButton.offsetLeft - categoryContainer.value.offsetWidth / 2 + activeButton.offsetWidth / 2,
-            behavior: "smooth",
-          });
-        }
-      }
     };
 
     const toggleOption = (id, value) => {
@@ -192,19 +141,12 @@ export default {
       showModal.value = true;
     };
 
-    const openCamera = () => {
-      showModal.value = false;
-      console.log("Membuka Kamera...");
+    const handleFileUpload = (fileUrl) => {
+      if (selectedFilePoint.value !== null) {
+        formData.value[selectedFilePoint.value + "_file"] = fileUrl;
+        showModal.value = false;
+      }
     };
-
-    const openGallery = () => {
-      showModal.value = false;
-      console.log("Membuka Galeri...");
-    };
-
-    onMounted(() => {
-      scrollToActiveCategory();
-    });
 
     return {
       categories,
@@ -213,23 +155,20 @@ export default {
       formData,
       selectCategory,
       filledCounts,
-      categoryContainer,
       showModal,
       selectedFilePoint,
       toggleOption,
       openModal,
-      openCamera,
-      openGallery,
+      handleFileUpload,
     };
   },
   components: { FileModal },
   methods: {
-    formatCurrency(id) {
-      let value = this.formData[id].replace(/\D/g, ""); // Hapus semua yang bukan angka
-      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Tambahkan titik setiap 3 angka
-      this.formData[id] = value;
+    formatCurrency(pointId) {
+      let value = this.formData[pointId].replace(/\D/g, ''); // Hanya angka
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambahkan titik pemisah
+      this.formData[pointId] = value;
     },
-  
   }
 };
 </script>
