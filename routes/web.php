@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Inspection\CekMobilController;
+use App\Http\Controllers\Inspection\DetailKendaraanController;
 use App\Http\Controllers\MasterData\CategoryController;
 use App\Http\Controllers\MasterData\InspectionPointController;
 use Illuminate\Foundation\Application;
@@ -31,5 +32,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/inspection-points', InspectionPointController::class);
 });
 Route::middleware(['auth'])->group(function () {
+    Route::resource('/detail-kendaraan', DetailKendaraanController::class);
     Route::resource('/cek-mobil', CekMobilController::class);
 });

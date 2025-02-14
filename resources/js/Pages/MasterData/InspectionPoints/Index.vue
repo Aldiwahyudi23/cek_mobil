@@ -184,6 +184,7 @@ const confirmDelete = (id) => {
                             <option value="Damage">Damage</option>
                             <option value="Select">Select</option>
                             <option value="Option">Option</option>
+                            <option value="Sop">SOP</option>
                             <option value="Option to Foto">Option to Foto</option>
                         </select>
                     </div>

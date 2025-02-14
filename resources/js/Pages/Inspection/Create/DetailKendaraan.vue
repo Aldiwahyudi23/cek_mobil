@@ -79,9 +79,8 @@ const submitForm = () => {
   <option value="Bensin">Bensin</option>
   <option value="Diesel">Diesel</option>
   <option value="Listrik">Listrik</option>
+  <option value="Listrik">HyBird</option>
 </SelectInput>
-
-                        
                     </div>
                 </div>
 

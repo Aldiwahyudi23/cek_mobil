@@ -68,7 +68,7 @@
     <div v-if="formData[point.id + '_file']" class="w-32 h-40">
       <img :src="formData[point.id + '_file']" alt="Foto"
         class="rounded-xl object-cover w-full h-full"
-        style="aspect-ratio: 3 / 4;" />
+        style="aspect-ratio: 4 / 3;" />
     </div>
 
     <!-- Tombol Hapus -->
