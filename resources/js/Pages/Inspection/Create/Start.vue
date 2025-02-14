@@ -17,7 +17,7 @@
     </div>
 
     <!-- Content -->
-    <div class="p-4 mt-20"> <!-- Tambah margin agar tidak tertutup header -->
+    <div class="p-4 mt-20">
       <div v-if="inspectionPoints.length">
         <div v-for="point in inspectionPoints" :key="point.id" class="mt-4">
           <label class="block text-sm font-medium">{{ point.name }}</label>
@@ -29,12 +29,11 @@
             :placeholder="point.placeholder"
             @input="formData[point.id] = $event.target.value.toUpperCase()" />
 
- <!-- Input Account dengan Format -->
-        <input v-if="point.type_input === 'Input Account'" type="text"
-          v-model="formData[point.id]" @input="formatCurrency(point.id)"
-          class="w-full border px-3 py-2 rounded-lg mt-1"
-          :placeholder="point.placeholder" />
-
+          <!-- Input Account dengan Format -->
+          <input v-if="point.type_input === 'Input Account'" type="text"
+            v-model="formData[point.id]" @input="formatCurrency(point.id)"
+            class="w-full border px-3 py-2 rounded-lg mt-1"
+            :placeholder="point.placeholder" />
 
           <!-- Input Number -->
           <input v-if="point.type_input === 'Input Number'" type="number" 
@@ -59,17 +58,38 @@
               class="border px-4 py-2 rounded-lg">Tidak Ada</button>
           </div>
 
+         
           <!-- Input File untuk Foto -->
-          <div v-if="point.type_input === 'Foto' || formData[point.id] === 'Ada'" class="mt-3">
-            <p class="text-gray-600 text-sm">File JPG berukuran maks 2,5 MB</p>
-            <div class="photo-upload border rounded-xl p-3 text-center cursor-pointer" @click="openModal(point.id)">
-              <img v-if="formData[point.id + '_file']" :src="formData[point.id + '_file']" alt="Foto" class="photo-preview rounded-xl" />
-              <div v-else class="upload-placeholder flex flex-col items-center">
-                <i class="icon-upload text-gray-400 text-3xl mb-2"></i>
-                <p class="text-gray-500">Upload Foto</p>
-              </div>
-            </div>
-          </div>
+<div v-if="point.type_input === 'Foto' || formData[point.id] === 'Ada'" class="mt-3">
+  <p class="text-gray-600 text-sm">File JPG berukuran maks 2,5 MB</p>
+
+  <div class="flex items-center space-x-20">
+    <!-- Review Foto -->
+    <div v-if="formData[point.id + '_file']" class="w-32 h-40">
+      <img :src="formData[point.id + '_file']" alt="Foto"
+        class="rounded-xl object-cover w-full h-full"
+        style="aspect-ratio: 3 / 4;" />
+    </div>
+
+    <!-- Tombol Hapus -->
+    <button v-if="formData[point.id + '_file']"
+      @click="removePhoto(point.id)"
+      class="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition">
+      Delete
+    </button>
+
+    <!-- Tombol Upload -->
+    <div v-else class="photo-upload border rounded-xl p-3 text-center cursor-pointer  h-32 flex items-center w-full justify-center"
+      @click="openModal(point.id)">
+      <div class="upload-placeholder flex flex-col items-center">
+        <i class="icon-upload text-gray-400 text-3xl mb-2"></i>
+        <p class="text-gray-500">Upload Foto</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
         </div>
       </div>
     </div>
@@ -102,11 +122,6 @@ button:focus {
   border: 2px dashed #ccc;
   padding: 15px;
   text-align: center;
-  border-radius: 10px;
-}
-.photo-preview {
-  width: 100%;
-  max-width: 250px;
   border-radius: 10px;
 }
 </style>
@@ -148,6 +163,10 @@ export default {
       }
     };
 
+    const removePhoto = (pointId) => {
+      formData.value[pointId + "_file"] = null;
+    };
+
     return {
       categories,
       activeTab,
@@ -160,13 +179,14 @@ export default {
       toggleOption,
       openModal,
       handleFileUpload,
+      removePhoto
     };
   },
   components: { FileModal },
   methods: {
     formatCurrency(pointId) {
-      let value = this.formData[pointId].replace(/\D/g, ''); // Hanya angka
-      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambahkan titik pemisah
+      let value = this.formData[pointId].replace(/\D/g, ''); 
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); 
       this.formData[pointId] = value;
     },
   }
