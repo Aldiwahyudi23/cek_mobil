@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\DataMobil\BrandController;
+use App\Http\Controllers\DataMobil\CarsController;
+use App\Http\Controllers\DataMobil\CarTypeController;
+use App\Http\Controllers\DataMobil\EngineCapacityController;
+use App\Http\Controllers\DataMobil\FuelTypeController;
+use App\Http\Controllers\DataMobil\ModelController;
+use App\Http\Controllers\DataMobil\ProductionPeriodController;
+use App\Http\Controllers\DataMobil\TransmissionController;
 use App\Http\Controllers\Inspection\CekMobilController;
 use App\Http\Controllers\Inspection\DetailKendaraanController;
 use App\Http\Controllers\MasterData\CategoryController;
@@ -34,4 +42,14 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('/detail-kendaraan', DetailKendaraanController::class);
     Route::resource('/cek-mobil', CekMobilController::class);
+});
+Route::middleware(['auth'])->group(function () {
+    Route::resource('/data-mobil/brand', BrandController::class);
+    Route::resource('/data-mobil/model', ModelController::class);
+    Route::resource('/data-mobil/car-type', CarTypeController::class);
+    Route::resource('/data-mobil/capacity', EngineCapacityController::class);
+    Route::resource('/data-mobil/transmi', TransmissionController::class);
+    Route::resource('/data-mobil/bahan-bakar', FuelTypeController::class);
+    Route::resource('/data-mobil/periode', ProductionPeriodController::class);
+    Route::resource('/data-mobil/cars', CarsController::class);
 });
