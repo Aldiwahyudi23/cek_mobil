@@ -33,7 +33,10 @@ class EngineCapacityController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'value' => 'required|unique:capacities,value',
+            'value' => 'required|unique:engine_capacities,value',
+        ], [
+            'value.required' => 'CC Harus diIsi.',
+            'value.unique' => 'CC Sudah Ada, cari nama lain..',
         ]);
 
         EngineCapacity::create($request->all());
@@ -63,7 +66,10 @@ class EngineCapacityController extends Controller
     public function update(Request $request, EngineCapacity $capacity)
     {
         $request->validate([
-            'value' => 'required|unique:capacities,value',
+            'value' => 'required|unique:engine_capacities,value,' . $capacity->id,
+        ], [
+            'value.required' => 'CC Harus diIsi.',
+            'value.unique' => 'CC Sudah Ada, cari nama lain..',
         ]);
 
         $capacity->update($request->all());

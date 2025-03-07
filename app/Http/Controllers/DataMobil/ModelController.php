@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataMobil\Brand;
 use App\Models\DataMobil\CarModel;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ModelController extends Controller
@@ -34,11 +35,25 @@ class ModelController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'brand_id' => 'required|exists:brands,id',
-            'name' => 'required|string|max:255',
-            'is_active' => 'boolean',
-        ]);
+        $request->validate(
+            [
+                'brand_id' => 'required|exists:brands,id', // Pastikan brand_id ada di tabel brands
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    // Validasi kombinasi unik untuk brand_id dan name
+                    Rule::unique('car_models')->where(function ($query) use ($request) {
+                        return $query->where('brand_id', $request->brand_id)
+                            ->where('name', $request->name);
+                    }),
+                ],
+                'is_active' => 'boolean',
+            ],
+            [
+                'name.required' => 'Nama Model Mobil sudah ada sesuai merek.',
+            ]
+        );
 
         CarModel::create($request->all());
         return redirect()->back()->with('success', 'Model Mobil berhasil ditambahkan.');
@@ -66,8 +81,17 @@ class ModelController extends Controller
     public function update(Request $request, CarModel $Model)
     {
         $request->validate([
-            'brand_id' => 'required|exists:brands,id',
-            'name' => 'required|string|max:255',
+            'brand_id' => 'required|exists:brands,id', // Pastikan brand_id ada di tabel brands
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                // Validasi kombinasi unik untuk brand_id dan name, kecuali untuk ID yang sedang diperbarui
+                Rule::unique('car_models')->where(function ($query) use ($request) {
+                    return $query->where('brand_id', $request->brand_id)
+                        ->where('name', $request->name);
+                })->ignore($Model->id), // Abaikan record dengan ID yang sedang diperbarui
+            ],
             'is_active' => 'boolean',
         ]);
 

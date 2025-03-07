@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('engine_capacity_id')->constrained('engine_capacities')->onDelete('cascade');
             $table->foreignId('transmission_id')->constrained('transmissions')->onDelete('cascade');
             $table->foreignId('fuel_type_id')->constrained('fuel_types')->onDelete('cascade');
-            $table->foreignId('production_period_id')->constrained('production_periods')->onDelete('cascade');
+            $table->string('production_period');
             $table->timestamps();
         });
     }

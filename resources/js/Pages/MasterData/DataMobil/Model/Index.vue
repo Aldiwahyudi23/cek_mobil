@@ -5,6 +5,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
+import InputError from '@/Components/InputError.vue';
 import CustomModal from "@/Components/CustomModal.vue";
 import { router } from "@inertiajs/vue3";
 
@@ -154,11 +155,13 @@ const confirmDelete = (id) => {
                                 {{ brand.name }}
                             </option>
                         </select>
+                        <InputError :message="form.errors.brand_id" />
                     </div>
 
                     <div class="mb-4">
                         <InputLabel for="name" value="Nama Model" />
-                        <TextInput id="name" v-model="form.name" class="block w-full" required />
+                        <TextInput id="name" v-model="form.name" class="block w-full" />
+                         <InputError :message="form.errors.name" />
                     </div>
 
                     <div class="flex items-center">

@@ -5,6 +5,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
+import InputError from '@/Components/InputError.vue';
 import CustomModal from "@/Components/CustomModal.vue";
 import { router } from "@inertiajs/vue3";
 
@@ -151,14 +152,17 @@ const confirmDelete = (id) => {
                                 {{ model.name }}
                             </option>
                         </select>
+                        <InputError :message="form.errors.car_model_id" />
                     </div>
                     <div class="mb-4">
                         <InputLabel for="name" value="Nama Car Type" />
-                        <TextInput id="name" v-model="form.name" class="block w-full" required />
+                        <TextInput id="name" v-model="form.name" class="block w-full"  />
+                        <InputError :message="form.errors.name" />
                     </div>
                     <div class="mb-4">
                         <InputLabel for="description" value="Deskripsi" />
                         <TextInput id="description" v-model="form.description" class="block w-full" />
+                         <InputError :message="form.errors.description" />
                     </div>
                     <div class="flex items-center">
                         <input type="checkbox" id="is_active" v-model="form.is_active" class="mr-2" />

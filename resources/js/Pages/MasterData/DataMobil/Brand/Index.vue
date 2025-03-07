@@ -1,7 +1,7 @@
 <template>
     <div class="p-4">
         <!-- Bagian Header: Tombol Tambah & Pencarian -->
-        <div class="flex justify-between items-center mb-4">
+ <div class="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
             <PrimaryButton @click="openModal('create')">Tambah Merk</PrimaryButton>
             <div class="relative">
                 <TextInput 
@@ -51,7 +51,7 @@
                 <form @submit.prevent="submitForm">
                     <div class="mb-4">
                         <InputLabel for="name" value="Nama Kategori" />
-                        <TextInput id="name" v-model="form.name" class="block w-full" required />
+                        <TextInput id="name" v-model="form.name" class="block w-full" />
                         <InputError :message="form.errors.name" />
                     </div>
 

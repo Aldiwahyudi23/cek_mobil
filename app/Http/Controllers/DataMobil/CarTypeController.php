@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataMobil\CarModel;
 use App\Models\DataMobil\CarType;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class CarTypeController extends Controller
@@ -35,7 +36,17 @@ class CarTypeController extends Controller
     {
         $request->validate([
             'car_model_id' => 'required|exists:car_models,id',
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                // Validasi kombinasi unik untuk car_model_id dan name
+                Rule::unique('car_types')->where(function ($query) use ($request) {
+                    return $query->where('car_model_id', $request->car_model_id)
+                        ->where('name', $request->name);
+                }),
+            ],
+
             'description' => 'required|string',
             'is_active' => 'boolean',
         ]);
@@ -68,7 +79,16 @@ class CarTypeController extends Controller
     {
         $request->validate([
             'car_model_id' => 'required|exists:car_models,id',
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                // Validasi kombinasi unik untuk car_model_id dan name, kecuali untuk ID yang sedang diperbarui
+                Rule::unique('car_types')->where(function ($query) use ($request) {
+                    return $query->where('car_model_id', $request->car_model_id)
+                        ->where('name', $request->name);
+                })->ignore($carType->id), // Abaikan record dengan ID yang sedang diperbarui
+            ],
             'description' => 'required|string',
             'is_active' => 'boolean',
         ]);

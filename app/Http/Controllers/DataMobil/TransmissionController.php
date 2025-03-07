@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\DataMobil;
 
 use App\Http\Controllers\Controller;
+use App\Models\DataMobil\Transmission;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TransmissionController extends Controller
 {
@@ -12,7 +14,8 @@ class TransmissionController extends Controller
      */
     public function index()
     {
-        //
+        $transmissions = Transmission::orderBy('type', 'asc')->get();
+        return Inertia::render('MasterData/DataMobil/Transmission/Index', compact('transmissions'));
     }
 
     /**
@@ -28,7 +31,15 @@ class TransmissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'type' => 'required|string|unique:transmissions,type',
+        ],  [
+            'type.required' => 'Transmisi Harus diIsi.',
+            'type.unique' => 'Transmisi Sudah Ada, cari nama lain..',
+        ]);
+
+        Transmission::create($request->all());
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -50,16 +61,29 @@ class TransmissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Transmission $transmission)
     {
-        //
+        // Validasi data
+        $request->validate([
+            'type' => 'required|string|unique:transmissions,type,' . $transmission->id,
+        ], [
+            'type.required' => 'Transmisi Harus diIsi.',
+            'type.unique' => 'Transmisi Sudah Ada, cari nama lain..',
+        ]);
+
+        // Update data
+        $transmission->update($request->all());
+
+        // Redirect dengan pesan sukses
+        return redirect()->back()->with('success', 'Data berhasil diperbaharui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Transmission $transmission)
     {
-        //
+        $transmission->delete();
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
 }

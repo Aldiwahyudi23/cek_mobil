@@ -1,7 +1,7 @@
 <template>
     <div class="p-4">
         <!-- Bagian Header: Tombol Tambah & Pencarian -->
-        <div class="flex justify-between items-center mb-4">
+         <div class="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
             <PrimaryButton @click="openModal('create')">Tambah Kapasitas</PrimaryButton>
             <div class="relative">
                 <TextInput 
@@ -44,7 +44,7 @@
                 <form @submit.prevent="submitForm">
                     <div class="mb-4">
                         <InputLabel for="value" value="Kapasitas (CC)" />
-                        <TextInput id="value" v-model.number="form.value" type="number" class="block w-full" required />
+                        <TextInput id="value" v-model.number="form.value" type="number" class="block w-full"  />
                         <InputError :message="form.errors.value" />
                     </div>
 
@@ -67,6 +67,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
+import InputError from '@/Components/InputError.vue';
 import CustomModal from "@/Components/CustomModal.vue";
 import { router } from "@inertiajs/vue3";
 

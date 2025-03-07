@@ -23,9 +23,13 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50|unique:brands,name',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
+        ], [
+            'name.required' => "Merek Wajib diisi !",
+            'name.max' => "Merek Tidak Boleh Lebih Dari 50 !",
+            'name.unique' => "Nama merk sudah ada, silakan gunakan nama yang lain.",
         ]);
 
         Brand::create($request->all());
@@ -39,9 +43,13 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:brands,name,' . $brand->id,
             'description' => 'nullable|string',
             'is_active' => 'boolean',
+        ], [
+            'name.required' => "Merek Wajib diisi !",
+            'name.max' => "Merek Tidak Boleh Lebih Dari 50 !",
+            'name.unique' => 'Nama merk sudah ada, silakan gunakan nama yang lain.',
         ]);
 
         $brand->update($request->all());

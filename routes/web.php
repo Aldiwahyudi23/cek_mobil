@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/data-mobil/model', ModelController::class);
     Route::resource('/data-mobil/car-type', CarTypeController::class);
     Route::resource('/data-mobil/capacity', EngineCapacityController::class);
-    Route::resource('/data-mobil/transmi', TransmissionController::class);
+    Route::resource('/data-mobil/transmission', TransmissionController::class);
     Route::resource('/data-mobil/bahan-bakar', FuelTypeController::class);
     Route::resource('/data-mobil/periode', ProductionPeriodController::class);
     Route::resource('/data-mobil/cars', CarsController::class);
